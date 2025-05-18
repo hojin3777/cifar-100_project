@@ -1,0 +1,13 @@
+
+    time_date: 250518_0430
+    모델 세팅 :
+        dropout_ratio: 0.3
+        use_batchnorm: True
+    트레이너 세팅:
+        epochs: 5
+        mini_batch_size: 2048
+        optimizer: Adam
+        optimizer_param: {'lr': 0.002}
+    모델 노트:
+        모델 load 함수 상태 확인을 위해 15회만 훈련
+    
