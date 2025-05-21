@@ -1,0 +1,13 @@
+time_date: 250520_0530
+모델 세팅 :
+    dropout_ratio: 0.3
+    use_batchnorm: False
+    weight_init_std: 0.05
+트레이너 세팅:
+    epochs: 50
+    mini_batch_size: 2048
+    optimizer: Adam
+    optimizer_param: {'lr': 0.001}
+모델 노트:
+    he 초기화와 0.05 초기화 비교
+    
