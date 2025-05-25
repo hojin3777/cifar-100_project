@@ -1,4 +1,4 @@
-time_date: 250521_1030
+time_date: 250523_0550
 모델 세팅 :
     dropout_ratio: 0.3
     use_batchnorm: True
@@ -11,5 +11,5 @@ time_date: 250521_1030
     use_augmentation: True
     augmentation_param: {'num_aug': 5000, 'initial_seed': 42}
 모델 노트:
-    증강 기법 추가
+    he 초기화와 0.01 초기화 비교
     

@@ -1,4 +1,4 @@
-time_date: 250521_1030
+time_date: 250524_1500
 모델 세팅 :
     dropout_ratio: 0.3
     use_batchnorm: True
@@ -7,9 +7,7 @@ time_date: 250521_1030
     epochs: 50
     mini_batch_size: 2048
     optimizer: Adam
-    optimizer_param: {'lr': 0.001}
-    use_augmentation: True
-    augmentation_param: {'num_aug': 5000, 'initial_seed': 42}
+    optimizer_param: {'lr': 0.003}
 모델 노트:
-    증강 기법 추가
+    randaug, cutmix 적용, lr 조절
     
