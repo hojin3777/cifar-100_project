@@ -1,6 +1,6 @@
 5/27
 
-randaugment + cutmix + labelsmoothing 
+randaugment + cutmix + labelsmoothing \n
 randaugment + cutmix + labelsmoothing + LearningRate scheduler 
 비교결과 스케줄러가 있을경우 더 빠르게 수렴이 가능하며 후반부 fine tunning까지 가능하여 정확도가 1%증가
 그러나 best model이 loss가 낮은지점을 찾았으나 정확도가 낮다 -> loss가 sharp minimum에 진입하여 낮다고 생각
