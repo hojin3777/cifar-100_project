@@ -1,8 +1,8 @@
 5/27
 
-randaugment 0.6200
+randaugment 0.6300
 
-randaugment + cutmix 0.6300 
+randaugment + cutmix 0.6400 
 
 randaugment + cutmix + labelsmoothing 0.6500 
 
@@ -14,3 +14,6 @@ randaugment + cutmix + labelsmoothing + LearningRate scheduler 0.6600
 1. best model을 2개를 저장하여 best loss , best acc로 저장
 2. SAM optimizer 를 기존 adam optimizer 또는 SGD + Momentum optimizer 에 적용하여 flat minimum으로 수렴하도록 유도
 ![image](https://github.com/user-attachments/assets/15411cba-489d-4070-983d-b7c212bfe8ec)
+
+SAM optimizer는 gradient를 2번 연산하므로 학습시간이 2배이상 걸릴거라 생각
+-> 모델구조를 EfficiencyNet으로 변경하여 연샨량 축소를 통해 학습시간을 확보
