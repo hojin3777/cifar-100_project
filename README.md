@@ -1,4 +1,5 @@
 5/27
+
 randaugment + cutmix + labelsmoothing 
 randaugment + cutmix + labelsmoothing + LearningRate scheduler 
 비교결과 스케줄러가 있을경우 더 빠르게 수렴이 가능하며 후반부 fine tunning까지 가능하여 정확도가 1%증가
