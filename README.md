@@ -1,8 +1,12 @@
 5/27
 
-randaugment + cutmix + labelsmoothing 
+randaugment 0.6200
 
-randaugment + cutmix + labelsmoothing + LearningRate scheduler 
+randaugment + cutmix 0.6300 
+
+randaugment + cutmix + labelsmoothing 0.6500 
+
+randaugment + cutmix + labelsmoothing + LearningRate scheduler 0.6600
 
 
 비교결과 스케줄러가 있을경우 더 빠르게 수렴이 가능하며 후반부 fine tunning까지 가능하여 정확도가 1%증가
