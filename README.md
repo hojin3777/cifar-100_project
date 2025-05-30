@@ -17,3 +17,17 @@ randaugment + cutmix + labelsmoothing + LearningRate scheduler 0.6600
 
 SAM optimizer는 gradient를 2번 연산하므로 학습시간이 2배이상 걸릴거라 생각
 -> 모델구조를 EfficiencyNet으로 변경하여 연샨량 축소를 통해 학습시간을 확보
+
+-------------------------------------------------------------------------------
+
+5/28
+
+SAM optimizer 너무 느려서 폐기 효율이 안나옴
+
+SE block 추가
+
+기존방식
+Conv->Relu->Conv->Relu x2 -> ...
+
+개선된방식
+Conv->Relu->Conv->Relu->SEblock x2 -> ...
