@@ -1,2 +1,4 @@
 cifar-100-python/
 dataset/
+*best_model.pkl
+*.pth
