@@ -282,3 +282,121 @@ class Pooling:
         dx = col2im(dcol, self.x.shape, self.pool_h, self.pool_w, self.stride, self.pad)
         
         return dx
+
+class BatchNorm2d:
+    """
+    2D 입력에 대한 배치 정규화 레이어
+    forward 시:
+      학습 시에는 미니배치의 평균과 분산으로 정규화하고, 이동 평균(running_mean)과 이동 분산(running_var)을 업데이트
+      추론 시에는 저장된 이동 평균과 이동 분산을 사용하여 정규화
+    backward 시:
+      gamma, beta 및 입력 x에 대한 그래디언트를 계산
+    """
+    def __init__(self, gamma, beta, momentum=0.9, running_mean=None, running_var=None, eps=1e-5):
+        self.gamma = gamma  # 스케일 파라미터 (학습 대상)
+        self.beta = beta    # 시프트 파라미터 (학습 대상)
+        self.momentum = momentum
+        self.input_shape = None # 입력 데이터의 형상 (N, C, H, W)
+
+        # 추론 시 사용할 이동 평균/분산
+        self.running_mean = running_mean
+        self.running_var = running_var
+        self.eps = eps # 분모가 0이 되는 것을 방지하기 위한 작은 값
+
+        # 역전파 시 중간 계산 값 저장
+        self.batch_size = None
+        self.xc = None
+        self.std = None
+        self.dgamma = None
+        self.dbeta = None
+
+    def forward(self, x, train_flg=True):
+        self.input_shape = x.shape
+        if x.ndim != 4:
+            # 입력 데이터가 4차원이 아닐 경우 예외 처리
+            raise ValueError("Input must be a 4D (N, C, H, W) for BatchNorm2d.")
+
+        if self.running_mean is None:
+            N, C, H, W = x.shape
+            self.running_mean = np.zeros(C, dtype=x.dtype)
+            self.running_var = np.zeros(C, dtype=x.dtype)
+
+        if train_flg:
+            # 학습 시: 미니배치 통계 사용 및 이동 평균/분산 업데이트
+            # (N, C, H, W) -> (N*H*W, C)로 변경하여 채널별 평균/분산 계산 용이하게
+            xc_reshaped = x.transpose(0, 2, 3, 1).reshape(-1, self.input_shape[1])
+            mu = np.mean(xc_reshaped, axis=0)
+            var = np.var(xc_reshaped, axis=0)
+
+            self.xc = (x - mu.reshape(1, -1, 1, 1)) # 채널별 평균을 브로드캐스팅하여 뺌
+            self.std = np.sqrt(var.reshape(1, -1, 1, 1) + self.eps)
+            xn = self.xc / self.std
+
+            self.batch_size = x.shape[0] # 역전파 시 사용
+            # self.xc = (x - mu) / self.std # 이 부분은 위에서 이미 계산됨
+
+            self.running_mean = self.momentum * self.running_mean + (1 - self.momentum) * mu
+            self.running_var = self.momentum * self.running_var + (1 - self.momentum) * var
+        else:
+            # 추론 시: 저장된 이동 평균/분산 사용
+            mu = self.running_mean.reshape(1, -1, 1, 1)
+            var = self.running_var.reshape(1, -1, 1, 1)
+            xc = x - mu
+            xn = xc / np.sqrt(var + self.eps)
+
+        out = self.gamma.reshape(1, -1, 1, 1) * xn + self.beta.reshape(1, -1, 1, 1)
+        return out
+
+    def backward(self, dout):
+        # (N, C, H, W) 형태의 dout을 가정
+        # dbeta: dout의 각 채널별 합 (H, W 축에 대해) 후 평균
+        self.dbeta = np.sum(dout, axis=(0, 2, 3))
+
+        # dgamma: (dout * xn)의 각 채널별 합 (H, W 축에 대해) 후 평균
+        # xn은 forward 시 계산된 정규화된 입력 (self.xc / self.std)
+        xn = self.xc / self.std
+        self.dgamma = np.sum(xn * dout, axis=(0, 2, 3))
+
+        # dxn: dout * gamma
+        dxn = self.gamma.reshape(1, -1, 1, 1) * dout
+
+        # dxc: dxn / std
+        dxc = dxn / self.std
+
+        # dstd: sum(dxn * xc * (-1/std^2)) = -sum(dxn * xc) / std^2
+        dstd = -np.sum((dxn * self.xc) / (self.std * self.std), axis=(0, 2, 3)).reshape(1, -1, 1, 1)
+
+        # dvar: dstd * (1/(2*sqrt(var+eps))) = dstd / (2 * std)
+        dvar = dstd / (2 * self.std)
+
+        # dmu: -sum(dxc) - dvar * (2/N*H*W) * sum(-xc)  (복잡하므로 간소화된 공식 사용)
+        # 또는 dx = (1/std)[dxn - mean(dxn) - xn*mean(dxn*xn)]
+        # 여기서는 일반적인 배치정규화 역전파 공식을 따름
+        # (N, C, H, W) -> (N*H*W, C)
+        dx_reshaped = (1. / (self.batch_size * self.input_shape[2] * self.input_shape[3])) * \
+                      (self.std.reshape(1, -1, 1, 1)**-1) * \
+                      ( (self.batch_size * self.input_shape[2] * self.input_shape[3]) * dxn - \
+                        np.sum(dxn, axis=(0,2,3)).reshape(1,-1,1,1) - \
+                        xn * np.sum(dxn * xn, axis=(0,2,3)).reshape(1,-1,1,1) )
+
+        return dx_reshaped
+    
+class GlobalAveragePooling:
+    """Global Average Pooling 레이어"""
+    def __init__(self):
+        self.params, self.grads = [], [] # 학습 파라미터 없음
+        self.cache = None
+
+    def forward(self, x):
+        # x: (N, C, H, W)
+        self.cache = x.shape 
+        out = np.mean(x, axis=(2, 3)) # (N, C)
+        return out
+
+    def backward(self, dout):
+        # dout: (N, C)
+        N, C, H, W = self.cache
+        # 각 채널의 평균에 대한 그래디언트를 H*W 개의 요소에 균등하게 분배
+        dx_avg = dout.reshape(N, C, 1, 1) / (H * W) 
+        dx = np.tile(dx_avg, (1, 1, H, W)) # (N, C, H, W)
+        return dx
