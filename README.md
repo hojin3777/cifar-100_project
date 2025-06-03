@@ -56,6 +56,14 @@ CIFAR-100 Classification Without Deeplearning Libraries
 - ResNet용 BatchNorm2d, AveragePooling 추가
 
 
+## 250604_0250
+### main_100_ResNet
+- Cupy 적용 및 검토 완료, 넘파이로 구동하는 case는 "_temp를 참고해서 더 다듬어야함
+- ReduceLRonPlateu 적용 및 검증중, 현재 상태로는약 62%가 한계
+- 해당 기법으로 coarse class 분류 검토
+- label smoothing 적용 검토 필요
+
+
 ## TODO
 - EfficientNet 적용 검토 : MTL이나 ResNet보다 잘 나오는진 모르겠음
-- Cupy를 활용한 numpy gpu 연산 적용 필요
+- ~~Cupy를 활용한 numpy gpu 연산 적용 필요~~
