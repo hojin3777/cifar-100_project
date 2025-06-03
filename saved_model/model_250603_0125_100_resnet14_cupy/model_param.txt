@@ -1,0 +1,21 @@
+time_date: 250603_0125_100_resnet14_cupy
+모델 세팅 :
+    num_classes: 100
+    block_class: <class '__main__.BasicBlock'>
+    num_blocks_list: [2, 2, 2]
+    initial_channels: 32
+    channels_list: [32, 64, 128]
+    weight_init_std: he
+    dropout_rate_in_block: 0.0
+    fc_dropout_ratio: 0.25
+    verbose: False
+트레이너 세팅:
+    epochs: 50
+    mini_batch_size: 128
+    optimizer: Adam
+    optimizer_param: {'lr': 0.001}
+    weight_decay_lambda: 0.0001
+    use_augmentation: True
+모델 노트:
+    CustomResNet (CuPy if available) with RandAugment_xp, CutMix_xp, L2.
+    
