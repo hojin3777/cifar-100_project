@@ -62,6 +62,7 @@ CIFAR-100 Classification Without Deeplearning Libraries
 - ReduceLRonPlateu 적용 및 검증중, 현재 상태로는약 62%가 한계
 - 해당 기법으로 coarse class 분류 검토
 - label smoothing 적용 검토 필요
+- ++250604_0430: 학습 완료 및 세이브로드 작동 확인, 그래프 확인, 라벨스무딩 적용 예정
 
 
 ## TODO
