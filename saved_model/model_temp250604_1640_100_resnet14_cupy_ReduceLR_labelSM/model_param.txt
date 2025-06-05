@@ -1,4 +1,4 @@
-time_date: temp250603_1500_100_resnet14_cupy_ReduceLR
+time_date: temp250604_1640_100_resnet14_cupy_ReduceLR_labelSM
 모델 세팅 :
     num_classes: 100
     block_class: <class '__main__.BasicBlock'>
@@ -8,10 +8,11 @@ time_date: temp250603_1500_100_resnet14_cupy_ReduceLR
     weight_init_std: he
     dropout_rate_in_block: 0.0
     fc_dropout_ratio: 0.25
+    smoothing_alpha: 0.1
     verbose: False
 트레이너 세팅:
-    epochs: 10
-    mini_batch_size: 128
+    epochs: 2
+    mini_batch_size: 256
     optimizer: Adam
     optimizer_param: {'lr': 0.001}
     weight_decay_lambda: 0.0001
@@ -19,5 +20,5 @@ time_date: temp250603_1500_100_resnet14_cupy_ReduceLR
     scheduler_class: <class '__main__.ReduceLROnPlateau'>
     scheduler_param: {'mode': 'min', 'factor': 0.1, 'patience': 5, 'verbose': True, 'min_lr': 1e-08}
 모델 노트:
-    CustomResNet (CuPy) with RandAugment_xp, CutMix_xp, L2, ReduceLROnPlateau.
+    커스텀 모듈 동작 테스트
     

@@ -65,6 +65,16 @@ CIFAR-100 Classification Without Deeplearning Libraries
 - ++250604_0430: 학습 완료 및 세이브로드 작동 확인, 그래프 확인, 라벨스무딩 적용 예정
 
 
+## 250606_0200
+### main_100_Res+MTL
+- commoncupy로 기초 모듈 분리
+- labelsmoothing의 효과과 미미해서, 일단 0으로 실험 진행
+- 200에폭으로 학습 진행중, 이후 결과 확인 필요
+
+### main_100_MTL
+- commoncupy 호출 확인, 모델 검증 필요
+
+
 ## TODO
 - EfficientNet 적용 검토 : MTL이나 ResNet보다 잘 나오는진 모르겠음
 - ~~Cupy를 활용한 numpy gpu 연산 적용 필요~~
